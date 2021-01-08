@@ -1,10 +1,13 @@
-import { PlayManager, RunnerManager } from "@akashic/headless-driver";
+import { PlayManager, RunnerManager, setSystemLogger } from "@akashic/headless-driver";
 import { activePermission, passivePermission } from "./constants";
 import { GameClient } from "./GameClient";
+import { DefaultLogger } from "./loggers/DefaultLogger";
+import { VerboseLogger } from "./loggers/VerboseLogger";
 import { RunnerGame } from "./types";
 
 export interface GameContextParameterObject {
 	gameJsonPath: string;
+	verbose?: boolean;
 }
 
 /**
@@ -18,6 +21,11 @@ export class GameContext {
 	protected playId: string | null = null;
 
 	constructor(params: GameContextParameterObject) {
+		if (params.verbose) {
+			setSystemLogger(new VerboseLogger());
+		} else {
+			setSystemLogger(new DefaultLogger());
+		}
 		this.params = params;
 		this.playManager = new PlayManager();
 		this.runnerManager = new RunnerManager(this.playManager);
