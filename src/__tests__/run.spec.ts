@@ -46,4 +46,27 @@ describe("run content", () => {
 
 		await context.destroy();
 	});
+
+	it("verbose = false", async () => {
+		const consoleLogSpy = jest.spyOn(console, "log");
+
+		const context = new GameContext({ gameJsonPath, verbose: false });
+		await context.getGameClient();
+
+		// 一切のログが出力されていないことを確認
+		expect(consoleLogSpy).not.toBeCalled();
+
+		jest.clearAllMocks();
+	});
+
+	it("verbose = true", async () => {
+		const consoleLogSpy = jest.spyOn(console, "log");
+
+		const context = new GameContext({ gameJsonPath, verbose: true });
+		await context.getGameClient();
+
+		expect(consoleLogSpy).toBeCalled();
+
+		jest.clearAllMocks();
+	});
 });
