@@ -1,8 +1,9 @@
 function main(param) {
     var scene = new g.Scene({
         game: g.game,
+        name: "entry-scene",
         // このシーンで利用するアセットのIDを列挙し、シーンに通知します
-        assetIds: ["player", "shot", "se"]
+        assetIds: ["player", "shot", "se", "dummy_text"]
     });
 
     scene.onLoad.add(function() {

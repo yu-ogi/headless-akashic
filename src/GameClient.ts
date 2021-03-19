@@ -5,6 +5,8 @@ type Runner = RunnerV1 | RunnerV2 | RunnerV3;
 
 export type GameClientInstanceType = "active" | "passive";
 
+export type GameClientConditionFunc = () => boolean;
+
 export interface GameClientParameterObject<T extends RunnerGame> {
 	runner: Runner;
 	game: T;
@@ -91,5 +93,29 @@ export class GameClient<T extends RunnerGame> {
 	 */
 	sendMessage(message: any, playerId?: string): void {
 		this.runner.amflow.sendEvent([0x20, 0, playerId, message]);
+	}
+
+	/**
+	 * 引数に指定した関数が真を返すまでゲームの状態を進める。
+	 * @param condition 進めるまでの条件となる関数。
+	 * @param timeout タイムアウト秒数。ゲーム内時間ではなく実時間である点に注意。
+	 */
+	async advanceTo(condition: GameClientConditionFunc, timeout: number = 5000): Promise<void> {
+		return new Promise((resolve, reject) => {
+			const limit = Date.now() + timeout;
+			const handler = (): void => {
+				if (limit < Date.now()) {
+					return void reject(new Error("GameClient#advanceTo(): processing timeout"));
+				}
+				try {
+					if (condition()) return void resolve();
+					this.runner.step();
+				} catch (e) {
+					return void reject(e);
+				}
+				setImmediate(handler);
+			};
+			handler();
+		});
 	}
 }
