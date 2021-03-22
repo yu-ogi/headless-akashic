@@ -38,7 +38,7 @@ const GameContext = require("@akashic/headless-akashic").GameContext;
   assert.strictEqual(game.fps, 60);
 
   await client.advanceTo(() => {
-    return game.scene().name === "..." // 最初のシーンをロードするまで進める
+    return game.scene().name === "..." // 名前が "..." のシーンをロードするまで進める
   });
 
   // ...
