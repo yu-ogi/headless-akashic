@@ -16,7 +16,7 @@ describe("run content", () => {
 		expect(game.fps).toBe(60);
 
 		// advance to the entry scene
-		await activeClient.advanceTo(() => activeClient.game.scene().name === "entry-scene");
+		await activeClient.advanceUntil(() => activeClient.game.scene().name === "entry-scene");
 
 		const activeClientScene = activeClient.game.scene()!;
 		expect(activeClientScene).toBeDefined();
@@ -27,7 +27,7 @@ describe("run content", () => {
 		expect(passiveClient.type).toBe("passive");
 
 		// advance to the entry scene
-		await passiveClient.advanceTo(() => passiveClient.game.scene().name === "entry-scene");
+		await passiveClient.advanceUntil(() => passiveClient.game.scene().name === "entry-scene");
 
 		const passiveClientScene = passiveClient.game.scene()!;
 		// same as the active client

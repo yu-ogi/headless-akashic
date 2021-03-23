@@ -1,7 +1,7 @@
 # CHANGELOG
 
 ## 1.1.0
-* `GameClient#advanceTo()` を追加
+* `GameClient#advanceUntil()` を追加
 
 ## 1.0.1
 * `GameContextParameterObject#verbose` を追加

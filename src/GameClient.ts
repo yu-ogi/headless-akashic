@@ -100,12 +100,12 @@ export class GameClient<T extends RunnerGame> {
 	 * @param condition 進めるまでの条件となる関数。
 	 * @param timeout タイムアウトまでのミリ秒数。ゲーム内時間ではなく実時間である点に注意。
 	 */
-	async advanceTo(condition: GameClientConditionFunc, timeout: number = 5000): Promise<void> {
+	async advanceUntil(condition: GameClientConditionFunc, timeout: number = 5000): Promise<void> {
 		return new Promise((resolve, reject) => {
 			const limit = Date.now() + timeout;
 			const handler = (): void => {
 				if (limit < Date.now()) {
-					return void reject(new Error("GameClient#advanceTo(): processing timeout"));
+					return void reject(new Error("GameClient#advanceUntil(): processing timeout"));
 				}
 				try {
 					if (condition()) return void resolve();
