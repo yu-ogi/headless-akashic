@@ -22,6 +22,10 @@
       "systemId": "sound",
       "duration": 250
     },
+    "dummy_text": {
+      "type": "text",
+      "path": "text/dummy_text.txt"
+    },
     "main": {
       "type": "script",
       "path": "script/main.js",

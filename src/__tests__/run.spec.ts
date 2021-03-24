@@ -15,20 +15,24 @@ describe("run content", () => {
 		expect(game.height).toBe(450);
 		expect(game.fps).toBe(60);
 
-		const activeClientScene = activeClient.game.scene()!;
+		// advance to the entry scene
+		await activeClient.advanceUntil(() => activeClient.game.scene().name === "entry-scene");
 
+		const activeClientScene = activeClient.game.scene()!;
 		expect(activeClientScene).toBeDefined();
-		expect(Object.keys(activeClientScene.assets).length).toBe(3); // player, shot, se
+		expect(Object.keys(activeClientScene.assets).length).toBe(4); // player, shot, se, dummy_text
 		expect(activeClientScene.children.length).toBe(1);
 
 		const passiveClient = await context.createPassiveGameClient();
 		expect(passiveClient.type).toBe("passive");
 
-		const passiveClientScene = passiveClient.game.scene()!;
+		// advance to the entry scene
+		await passiveClient.advanceUntil(() => passiveClient.game.scene().name === "entry-scene");
 
-		// same as a active client
+		const passiveClientScene = passiveClient.game.scene()!;
+		// same as the active client
 		expect(passiveClientScene).toBeDefined();
-		expect(Object.keys(passiveClientScene.assets).length).toBe(3);
+		expect(Object.keys(passiveClientScene.assets).length).toBe(4);
 		expect(passiveClientScene.children.length).toBe(1);
 
 		// generate a sprite (shot) if clicked on the game canvas

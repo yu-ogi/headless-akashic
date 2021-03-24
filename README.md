@@ -37,6 +37,10 @@ const GameContext = require("@akashic/headless-akashic").GameContext;
   assert.strictEqual(game.height, 450);
   assert.strictEqual(game.fps, 60);
 
+  await client.advanceUntil(() => {
+    return game.scene().name === "..." // 名前が "..." のシーンをロードするまで進める
+  });
+
   // ...
 
   await context.destroy();
