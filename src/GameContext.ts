@@ -1,12 +1,21 @@
 import { PlayManager, RunnerManager, setSystemLogger } from "@akashic/headless-driver";
-import { activePermission, passivePermission } from "./constants";
+import { activePermission, EMPTY_V3_PATH, passivePermission } from "./constants";
 import { GameClient } from "./GameClient";
 import { DefaultLogger } from "./loggers/DefaultLogger";
 import { VerboseLogger } from "./loggers/VerboseLogger";
 import { RunnerGame } from "./types";
 
 export interface GameContextParameterObject {
-	gameJsonPath: string;
+	/**
+	 * game.json のパス。
+	 * 省略した場合、空のゲームコンテンツを起動する。詳細は README を参照のこと。
+	 */
+	gameJsonPath?: string;
+
+	/**
+	 * 詳細な実行ログを出力するかどうか。
+	 * 省略した場合は `false` 。
+	 */
 	verbose?: boolean;
 }
 
@@ -33,7 +42,6 @@ export class GameContext {
 
 	/**
 	 * active の GameClient を返す。
-	 * @param param GameContext の開始に必要なパラメータ
 	 */
 	async getGameClient(): Promise<GameClient<RunnerGame>> {
 		const { playManager, runnerManager } = this;
@@ -44,7 +52,7 @@ export class GameContext {
 		}
 
 		const playId = await playManager.createPlay({
-			gameJsonPath
+			gameJsonPath: gameJsonPath ?? EMPTY_V3_PATH
 		});
 		this.playId = playId;
 

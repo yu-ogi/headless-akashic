@@ -1,0 +1,3 @@
+module.exports = () => {
+  // do nothing
+};

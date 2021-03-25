@@ -1,3 +1,4 @@
+import * as path from "path";
 import { Permission } from "@akashic/amflow";
 
 export const activePermission: Permission = {
@@ -17,3 +18,5 @@ export const passivePermission: Permission = {
 	subscribeTick: true,
 	maxEventPriority: 2
 };
+
+export const EMPTY_V3_PATH: string = path.join(__dirname, "..", "fixtures", "empty-v3", "game.json");

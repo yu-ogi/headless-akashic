@@ -98,7 +98,7 @@ export class GameClient<T extends RunnerGame> {
 	/**
 	 * 引数に指定した関数が真を返すまでゲームの状態を進める。
 	 * @param condition 進めるまでの条件となる関数。
-	 * @param timeout タイムアウトまでのミリ秒数。ゲーム内時間ではなく実時間である点に注意。
+	 * @param timeout タイムアウトまでのミリ秒数。省略時は `5000` 。ゲーム内時間ではなく実時間である点に注意。
 	 */
 	async advanceUntil(condition: GameClientConditionFunc, timeout: number = 5000): Promise<void> {
 		return new Promise((resolve, reject) => {
