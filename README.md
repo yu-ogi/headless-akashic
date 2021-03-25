@@ -48,6 +48,23 @@ const GameContext = require("@akashic/headless-akashic").GameContext;
 
 ```
 
+## note
+
+### 空のゲームコンテンツの仕様
+
+`GameContext` の生成時に `gameJsonPath` を省略した場合、空のゲームコンテンツを自動で実行します。
+このゲームコンテンツは以下の設定値で初期化されます。
+
+| 設定 | 値 |
+| --- | --- |
+| environment.sandbox-runtime | "3" |
+| width | 1280 |
+| height | 720 |
+| fps | 60 |
+
+これら値は headless-akashic のバージョンにより変動する可能性があります。
+したがって、これらの値をテスト等で決め打ちすることは避けてください。
+
 ## limitation
 
 ### 描画内容の確認および音声の再生に関して

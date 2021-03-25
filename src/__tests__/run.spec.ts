@@ -4,6 +4,15 @@ import { GameContext } from "..";
 const gameJsonPath = path.resolve(__dirname, "fixtures", "helloworld", "game.json");
 
 describe("run content", () => {
+	it("empty content", async () => {
+		const context = new GameContext({});
+		const activeClient = await context.getGameClient();
+		const game = activeClient.game;
+		expect(game.width).toBe(1280);
+		expect(game.height).toBe(720);
+		expect(game.fps).toBe(60);
+	});
+
 	it("helloworld", async () => {
 		const context = new GameContext({ gameJsonPath });
 		const activeClient = await context.getGameClient();
