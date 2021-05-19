@@ -1,11 +1,12 @@
 import * as path from "path";
+import { RunnerV3Game, RunnerV3_g } from "@akashic/headless-driver";
 import { GameContext } from "..";
 
 const gameJsonPath = path.resolve(__dirname, "fixtures", "helloworld", "game.json");
 
 describe("run content", () => {
 	it("empty content", async () => {
-		const context = new GameContext({});
+		const context = new GameContext<RunnerV3_g, RunnerV3Game>({});
 		const activeClient = await context.getGameClient();
 		const game = activeClient.game;
 		expect(game.width).toBe(1280);
@@ -14,12 +15,13 @@ describe("run content", () => {
 	});
 
 	it("helloworld", async () => {
-		const context = new GameContext({ gameJsonPath });
+		const context = new GameContext<RunnerV3_g, RunnerV3Game>({ gameJsonPath });
 		const activeClient = await context.getGameClient();
 
 		expect(activeClient.type).toBe("active");
 
 		const game = activeClient.game!;
+		expect(game).toBeInstanceOf(activeClient.g.Game);
 		expect(game.width).toBe(800);
 		expect(game.height).toBe(450);
 		expect(game.fps).toBe(60);
@@ -28,6 +30,7 @@ describe("run content", () => {
 		await activeClient.advanceUntil(() => activeClient.game.scene().name === "entry-scene");
 
 		const activeClientScene = activeClient.game.scene()!;
+		expect(activeClientScene).toBeInstanceOf(activeClient.g.Scene);
 		expect(activeClientScene).toBeDefined();
 		expect(Object.keys(activeClientScene.assets).length).toBe(4); // player, shot, se, dummy_text
 		expect(activeClientScene.children.length).toBe(1);
@@ -63,7 +66,7 @@ describe("run content", () => {
 	it("verbose = false", async () => {
 		const consoleLogSpy = jest.spyOn(console, "log");
 
-		const context = new GameContext({ gameJsonPath, verbose: false });
+		const context = new GameContext<RunnerV3_g, RunnerV3Game>({ gameJsonPath, verbose: false });
 		await context.getGameClient();
 
 		// 一切のログが出力されていないことを確認
@@ -75,7 +78,7 @@ describe("run content", () => {
 	it("verbose = true", async () => {
 		const consoleLogSpy = jest.spyOn(console, "log");
 
-		const context = new GameContext({ gameJsonPath, verbose: true });
+		const context = new GameContext<RunnerV3_g, RunnerV3Game>({ gameJsonPath, verbose: true });
 		await context.getGameClient();
 
 		expect(consoleLogSpy).toBeCalled();
