@@ -67,7 +67,7 @@ const fs = require("fs");
 // ...
 
 const client = await context.getGameClient();
-const canvas = client.getPrimarySurfaceCanvas("canvas");
+const canvas = client.getPrimarySurfaceCanvas();
 fs.writeFileSync("output.png", canvas.toBuffer()); // "output.png" に描画内容を書き出し
 ```
 
