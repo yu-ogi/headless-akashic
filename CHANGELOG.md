@@ -2,7 +2,7 @@
 
 ## 2.0.0
 * headless-driver@1.7.0 に追従
-* `GameContextParameterObject#renderingMode` を追加
+* `GameClientStartParameterObject#renderingMode` を追加
 * `GameClient#getPrimarySurfaceCanvas()` を追加
 * `GameClient#g` を追加
 * `GameClient`, `GameClientParameterObject` の generics の型を変更
