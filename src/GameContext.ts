@@ -14,13 +14,6 @@ export interface GameContextParameterObject {
 	gameJsonPath?: string;
 
 	/**
-	 * ゲーム画面のレンダリングモード。`"canvas"` または `"none"` が指定できる。
-	 * `"canvas"` を指定すると `GameClient#getPrimarySurfaceCanvas()` によりゲーム画面の描画データが取得できるようになる。
-	 * 初期値は `"none"` (ゲーム画面を描画しない)。
-	 */
-	renderingMode?: RunnerRenderingMode;
-
-	/**
 	 * プレイログデータ。
 	 */
 	playlog?: DumpedPlaylog;
@@ -33,6 +26,13 @@ export interface GameContextParameterObject {
 }
 
 export interface GameClientStartParameterObject {
+	/**
+	 * ゲーム画面のレンダリングモード。`"canvas"` または `"none"` が指定できる。
+	 * `"canvas"` を指定すると `getPrimarySurfaceCanvas()` によりゲーム画面の描画データが取得できるようになる。
+	 * 初期値は `"none"` (ゲーム画面を描画しない)。
+	 */
+	renderingMode?: RunnerRenderingMode;
+
 	/**
 	 * `g.Game#external` に与えられる値。
 	 */
@@ -91,7 +91,7 @@ export class GameContext<G extends Runner_g, Game extends RunnerGame> {
 			executionMode: "active",
 			allowedUrls: null,
 			trusted: true,
-			renderingMode: this.params.renderingMode,
+			renderingMode: params.renderingMode,
 			externalValue: params.externalValue
 		});
 
@@ -100,7 +100,7 @@ export class GameContext<G extends Runner_g, Game extends RunnerGame> {
 		const game = (await runnerManager.startRunner(runnerId)) as Game;
 		runner.pause();
 
-		return new GameClient<G, Game>({ runner, game, type: "active", renderingMode: this.params.renderingMode });
+		return new GameClient<G, Game>({ runner, game, type: "active", renderingMode: params.renderingMode });
 	}
 
 	/**
@@ -123,7 +123,7 @@ export class GameContext<G extends Runner_g, Game extends RunnerGame> {
 			executionMode: "passive",
 			allowedUrls: null,
 			trusted: true,
-			renderingMode: this.params.renderingMode,
+			renderingMode: params.renderingMode,
 			externalValue: params.externalValue
 		});
 
@@ -132,7 +132,7 @@ export class GameContext<G extends Runner_g, Game extends RunnerGame> {
 		runner.errorTrigger.add(this.handleRunnerError, this);
 		runner.pause();
 
-		return new GameClient<G, Game>({ runner, game, type: "passive", renderingMode: this.params.renderingMode });
+		return new GameClient<G, Game>({ runner, game, type: "passive", renderingMode: params.renderingMode });
 	}
 
 	/**
