@@ -88,7 +88,7 @@ fs.writeFileSync("output.png", canvas.toBuffer()); // "output.png" に描画内�
 
 ### TypeScript での型の解決
 
-headless-akashic はコンテンツのバージョンを動的に読み込むため、バージョンに応じた型定義を参照することができません。
+headless-akashic はコンテンツのバージョンを動的に読み込むため、そのままではバージョンに応じた型定義を参照することができません。
 バージョンに応じた型を静的に確定したい場合、以下のように `GameContext` の生成時に generics でバージョンを指定してください。
 
 ```typescript
@@ -104,7 +104,7 @@ const scene = activeClient.game.scene()!;
 scene.asset.getImage(...) // akashic-engine@3 の型定義を参照
 ```
 
-また、個別で型を指定する場合は以下のように as 演算子でダウンキャストすることができます。
+または、以下のように as 演算子でダウンキャストすることができます。
 
 ```typescript
 import type { RunnerV3Game } from "@akashic/headless-akashic";
