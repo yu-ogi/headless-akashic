@@ -1,9 +1,9 @@
-import { PlayManager, RunnerManager, setSystemLogger } from "@akashic/headless-driver";
+import { DumpedPlaylog, PlayManager, RunnerManager, RunnerRenderingMode, setSystemLogger } from "@akashic/headless-driver";
 import { activePermission, EMPTY_V3_PATH, passivePermission } from "./constants";
 import { GameClient } from "./GameClient";
 import { DefaultLogger } from "./loggers/DefaultLogger";
 import { VerboseLogger } from "./loggers/VerboseLogger";
-import { RunnerGame } from "./types";
+import { EngineVersions } from "./types";
 
 export interface GameContextParameterObject {
 	/**
@@ -13,17 +13,38 @@ export interface GameContextParameterObject {
 	gameJsonPath?: string;
 
 	/**
+	 * プレイログデータ。
+	 */
+	playlog?: DumpedPlaylog;
+
+	/**
 	 * 詳細な実行ログを出力するかどうか。
 	 * 省略した場合は `false` 。
 	 */
 	verbose?: boolean;
 }
 
+export interface GameClientStartParameterObject {
+	/**
+	 * ゲーム画面のレンダリングモード。`"canvas"` または `"none"` が指定できる。
+	 * `"canvas"` を指定すると `getPrimarySurfaceCanvas()` によりゲーム画面の描画データが取得できるようになる。
+	 * 初期値は `"none"` (ゲーム画面を描画しない)。
+	 */
+	renderingMode?: RunnerRenderingMode;
+
+	/**
+	 * `g.Game#external` に与えられる値。
+	 */
+	externalValue?: {
+		[key: string]: any;
+	};
+}
+
 /**
  * ゲームのコンテキスト。
  * 一つのゲームに対して一つのみ存在する。
  */
-export class GameContext {
+export class GameContext<EngineVersion extends keyof EngineVersions = keyof EngineVersions> {
 	protected params: GameContextParameterObject;
 	protected playManager: PlayManager;
 	protected runnerManager: RunnerManager;
@@ -35,7 +56,7 @@ export class GameContext {
 		} else {
 			setSystemLogger(new DefaultLogger());
 		}
-		this.params = params;
+		this.params = { ...params };
 		this.playManager = new PlayManager();
 		this.runnerManager = new RunnerManager(this.playManager);
 	}
@@ -43,7 +64,7 @@ export class GameContext {
 	/**
 	 * active の GameClient を返す。
 	 */
-	async getGameClient(): Promise<GameClient<RunnerGame>> {
+	async getGameClient(params: GameClientStartParameterObject = {}): Promise<GameClient<EngineVersion>> {
 		const { playManager, runnerManager } = this;
 		const { gameJsonPath } = this.params;
 
@@ -51,9 +72,12 @@ export class GameContext {
 			await this.playManager.deletePlay(this.playId);
 		}
 
-		const playId = await playManager.createPlay({
-			gameJsonPath: gameJsonPath ?? EMPTY_V3_PATH
-		});
+		const playId = await playManager.createPlay(
+			{
+				gameJsonPath: gameJsonPath ?? EMPTY_V3_PATH
+			},
+			this.params.playlog
+		);
 		this.playId = playId;
 
 		const playToken = playManager.createPlayToken(playId, activePermission);
@@ -64,21 +88,24 @@ export class GameContext {
 			amflow,
 			playToken,
 			executionMode: "active",
-			allowedUrls: null
+			allowedUrls: null,
+			trusted: true,
+			renderingMode: params.renderingMode,
+			externalValue: params.externalValue
 		});
 
 		const runner = runnerManager.getRunner(runnerId)!;
 		runner.errorTrigger.add(this.handleRunnerError, this);
-		const game = (await runnerManager.startRunner(runnerId)) as RunnerGame;
+		const game = (await runnerManager.startRunner(runnerId)) as EngineVersions[EngineVersion]["game"];
 		runner.pause();
 
-		return new GameClient({ runner, game, type: "active" });
+		return new GameClient<EngineVersion>({ runner, game, type: "active", renderingMode: params.renderingMode });
 	}
 
 	/**
 	 * passive の GameClient を生成する。
 	 */
-	async createPassiveGameClient(): Promise<GameClient<RunnerGame>> {
+	async createPassiveGameClient(params: GameClientStartParameterObject = {}): Promise<GameClient<EngineVersion>> {
 		const { playManager, runnerManager, playId } = this;
 
 		if (playId == null) {
@@ -93,15 +120,18 @@ export class GameContext {
 			amflow,
 			playToken,
 			executionMode: "passive",
-			allowedUrls: null
+			allowedUrls: null,
+			trusted: true,
+			renderingMode: params.renderingMode,
+			externalValue: params.externalValue
 		});
 
 		const runner = runnerManager.getRunner(runnerId)!;
-		const game = (await runnerManager.startRunner(runnerId)) as RunnerGame;
+		const game = (await runnerManager.startRunner(runnerId)) as EngineVersions[EngineVersion]["game"];
 		runner.errorTrigger.add(this.handleRunnerError, this);
 		runner.pause();
 
-		return new GameClient({ runner, game, type: "passive" });
+		return new GameClient<EngineVersion>({ runner, game, type: "passive", renderingMode: params.renderingMode });
 	}
 
 	/**

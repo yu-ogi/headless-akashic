@@ -41,14 +41,35 @@ const GameContext = require("@akashic/headless-akashic").GameContext;
     return game.scene().name === "..." // 名前が "..." のシーンをロードするまで進める
   });
 
+  const entity = scene.children[0];
+  assert(entity instanceof client.g.Sprite); // entity が g.Sprite であることを確認
+
   // ...
 
-  await context.destroy();
+  await context.destroy(); // GameContext の破棄
 })();
 
 ```
 
 ## note
+
+### コンテンツの描画内容の取得
+
+akashic-engine@3.0.0 以降に対応したコンテンツであれば `GameClient#getPrimarySurfaceCanvas()` を利用して描画内容を取得できます。
+headless-akashic@2.0.0 時点では、[node-canvas][node-canvas] での描画出力のみをサポートしています。
+詳細な API 仕様については [こちら][node-canvas] を参照してください。
+
+以下はコンテンツの描画内容を png として保存する例です。
+
+```javascript
+const fs = require("fs");
+
+// ...
+
+const client = await context.getGameClient({ renderingMode: "canvas" }); // renderingMode を指定
+const canvas = client.getPrimarySurfaceCanvas();
+fs.writeFileSync("output.png", canvas.toBuffer()); // "output.png" に描画内容を書き出し
+```
 
 ### 空のゲームコンテンツの仕様
 
@@ -57,54 +78,82 @@ const GameContext = require("@akashic/headless-akashic").GameContext;
 
 | 設定 | 値 |
 | --- | --- |
-| environment.sandbox-runtime | "3" |
-| width | 1280 |
-| height | 720 |
-| fps | 60 |
+| environment.sandbox-runtime | `"3"` |
+| width | `1280` |
+| height | `720` |
+| fps | `60` |
 
-これら値は headless-akashic のバージョンにより変動する可能性があります。
+これらの値は headless-akashic のバージョンにより変動する可能性があります。
 したがって、これらの値をテスト等で決め打ちすることは避けてください。
+
+### TypeScript での型の解決
+
+headless-akashic はコンテンツのバージョンを動的に読み込むため、そのままではバージョンに応じた型定義を参照することができません。
+バージョンに応じた型を静的に確定したい場合、以下のように `GameContext` の生成時に generics でバージョンを指定してください。
+
+```typescript
+// ...
+
+const context = new GameContext<3>({ gameJsonPath }); // generics による型の指定 (v3 の場合)
+const client = await context.getGameClient();
+
+const game = client.game!;
+await client.advanceUntil(() => client.game.scene().name === "entry-scene");
+
+const scene = activeClient.game.scene()!;
+scene.asset.getImage(...) // akashic-engine@3 の型定義を参照
+```
+
+または、以下のように as 演算子でダウンキャストすることができます。
+
+```typescript
+import type { RunnerV3Game } from "@akashic/headless-akashic";
+
+// ...
+
+const context = new GameContext({ gameJsonPath });
+const client = await context.getGameClient();
+const game = client.game as RunnerV3Game;
+
+// ...
+
+```
+
+各バージョンと型名の関係は以下のようになります。
+
+| akashic-engine のバージョン | `g` の型 | `g.game` の型 |
+| --- | --- | --- |
+| 1 | `RunnerV1_g` | `RunnerV1Game` |
+| 2 | `RunnerV2_g` | `RunnerV2Game` |
+| 3 | `RunnerV3_g` | `RunnerV3Game` |
 
 ## limitation
 
-### 描画内容の確認および音声の再生に関して
+### 音声の再生に関して
 
-`@akashic/headless-akashic@1.0.0` において、headless-akashic 上で実行されているコンテンツの描画状態を取得することはできません。
-同様に音声の再生もサポートしていません。
-
-将来的にはサポートされる予定です。
+`@akashic/headless-akashic@2.0.0` において、headless-akashic 上で実行されているコンテンツの音声再生をサポートしていません。
 
 ### ゲームコンテンツ内でのコンストラクタの等価性
 
-ゲームコンテンツ内のあるエンティティ (`g.Sprite` など) とのコンストラクタの等価性を確認したい場合、例えば以下のようなコードは意図しない結果となりえます。
+ゲームコンテンツ内のあるエンティティ (`g.Sprite` など) とのコンストラクタの等価性を確認したい場合、 `GameClient#g` のプロパティを参照してください。
 
 ```javascript
 import * as g from "@akashic/akashic-engine";
 import { GameContext } from "@akashic/headless-akashic";
 
-...
+// ...
+
+const client = await context.getGameClient();
+
+// ...
 
 const entity = scene.children[0];
-assert(entity instanceof g.Sprite); // entity が g.Sprite であることを確認
-```
-
-これは headless-akashic により生成される `g.Sprite` のコンストラクタが、上記のコードから参照されている `@akashic/akashic-engine` と一致しないことに起因しています。
-
-ただし、TypeScript の型として参照する分には問題ありません。
-
-```typescript
-import * as g from "@akashic/akashic-engine";
-import { GameContext } from "@akashic/headless-akashic";
-
-...
-
-const entity = scene.children[0] as g.Sprite;
-assert(entity.src != null); // entity が g.Sprite であることを確認
+assert(entity instanceof client.g.Sprite); // entity が g.Sprite であることを確認
 ```
 
 ### g および g.game の解決
 
-headless-akashic は、 require しただけではゲームコンテンツの実行環境において存在すべき `g` と `g.game` を自動的には解決しません。
+headless-akashic は、 require しただけではゲームコンテンツの実行環境において存在すべきグローバル変数 `g` 及び `g.game` を解決しません。
 (注: `GameContext#start()` により実行されるゲームコンテンツのスクリプトアセット内では `g` や `g.game` は自動的に解決されます)
 
 `g` に関するモジュール (`g.E` を継承したクラスなど) を単体テストしたいなどのケースでは、利用者自身で `globalThis` への `g` の代入が必要となります。
@@ -136,3 +185,5 @@ const player = new Player({
 ...
 
 ```
+
+[node-canvas]: https://github.com/Automattic/node-canvas
