@@ -6,7 +6,7 @@ type Runner = RunnerV1 | RunnerV2 | RunnerV3;
 
 export type GameClientInstanceType = "active" | "passive";
 
-export interface GameClientParameterObject<EngineVersion extends keyof EngineVersions> {
+export interface GameClientParameterObject<EngineVersion extends keyof EngineVersions = keyof EngineVersions> {
 	runner: Runner;
 	game: EngineVersions[EngineVersion]["game"];
 	type: GameClientInstanceType;
@@ -16,7 +16,7 @@ export interface GameClientParameterObject<EngineVersion extends keyof EngineVer
 /**
  * ゲームクライアント。
  */
-export class GameClient<EngineVersion extends keyof EngineVersions> {
+export class GameClient<EngineVersion extends keyof EngineVersions = keyof EngineVersions> {
 	/**
 	 * `g.game` の値。
 	 */

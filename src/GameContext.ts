@@ -45,7 +45,7 @@ export interface GameClientStartParameterObject {
  * ゲームのコンテキスト。
  * 一つのゲームに対して一つのみ存在する。
  */
-export class GameContext<EngineVersion extends keyof EngineVersions> {
+export class GameContext<EngineVersion extends keyof EngineVersions = keyof EngineVersions> {
 	protected params: GameContextParameterObject;
 	protected playManager: PlayManager;
 	protected runnerManager: RunnerManager;
