@@ -77,7 +77,7 @@
     ]
   },
   "dependencies": {
-    "@akashic/headless-driver": "^1.7.0",
+    "@akashic/headless-driver": "^1.7.2",
     "canvas": "2.7.0"
   },
   "devDependencies": {
