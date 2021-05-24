@@ -92,11 +92,9 @@ headless-akashic はコンテンツのバージョンを動的に読み込むた
 以下のように `GameContext` の生成時に generics でバージョンに合わせた型定義を指定してください。
 
 ```typescript
-import type { RunnerV3Game, RunnerV3_g } from "@akashic/headless-driver";
-
 // ...
 
-const context = new GameContext<RunnerV3Game, RunnerV3_g>({ gameJsonPath }); // generics による型の指定 (v3 の場合)
+const context = new GameContext<3>({ gameJsonPath }); // generics による型の指定 (v3 の場合)
 const client = await context.getGameClient();
 
 const game = client.game!;
@@ -106,7 +104,20 @@ const scene = activeClient.game.scene()!;
 scene.asset.getImage(...) // akashic-engine@3 の型定義を参照
 ```
 
-各バージョンと型名の関係は以下となります。
+また、個別で型を指定する場合は以下のように as 演算子でダウンキャストすることができます。
+
+```typescript
+import type { RunnerV3Game } from "@akashic/headless-akashic";
+
+// ...
+
+const game = client.game as RunnerV1Game;
+
+// ...
+
+```
+
+各バージョンと型名の関係は以下のようになります。
 
 | akashic-engine のバージョン | `g` の型 | `g.game` の型 |
 | --- | --- | --- |

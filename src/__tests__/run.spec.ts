@@ -1,12 +1,11 @@
 import * as path from "path";
-import { RunnerV3Game, RunnerV3_g } from "@akashic/headless-driver";
 import { GameContext } from "..";
 
 const gameJsonPath = path.resolve(__dirname, "fixtures", "helloworld", "game.json");
 
 describe("run content", () => {
 	it("empty content", async () => {
-		const context = new GameContext<RunnerV3_g, RunnerV3Game>({});
+		const context = new GameContext<3>({});
 		const activeClient = await context.getGameClient();
 		const game = activeClient.game;
 		expect(game.width).toBe(1280);
@@ -15,7 +14,7 @@ describe("run content", () => {
 	});
 
 	it("helloworld", async () => {
-		const context = new GameContext<RunnerV3_g, RunnerV3Game>({ gameJsonPath });
+		const context = new GameContext<3>({ gameJsonPath });
 		const activeClient = await context.getGameClient();
 
 		expect(activeClient.type).toBe("active");
@@ -66,7 +65,7 @@ describe("run content", () => {
 	it("verbose = false", async () => {
 		const consoleLogSpy = jest.spyOn(console, "log");
 
-		const context = new GameContext<RunnerV3_g, RunnerV3Game>({ gameJsonPath, verbose: false });
+		const context = new GameContext<3>({ gameJsonPath, verbose: false });
 		await context.getGameClient();
 
 		// 一切のログが出力されていないことを確認
@@ -78,7 +77,7 @@ describe("run content", () => {
 	it("verbose = true", async () => {
 		const consoleLogSpy = jest.spyOn(console, "log");
 
-		const context = new GameContext<RunnerV3_g, RunnerV3Game>({ gameJsonPath, verbose: true });
+		const context = new GameContext<3>({ gameJsonPath, verbose: true });
 		await context.getGameClient();
 
 		expect(consoleLogSpy).toBeCalled();

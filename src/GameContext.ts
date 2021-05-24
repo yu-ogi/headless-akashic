@@ -4,7 +4,7 @@ import { activePermission, EMPTY_V3_PATH, passivePermission } from "./constants"
 import { GameClient } from "./GameClient";
 import { DefaultLogger } from "./loggers/DefaultLogger";
 import { VerboseLogger } from "./loggers/VerboseLogger";
-import { RunnerGame, Runner_g } from "./types";
+import { EngineVersions } from "./types";
 
 export interface GameContextParameterObject {
 	/**
@@ -45,7 +45,7 @@ export interface GameClientStartParameterObject {
  * ゲームのコンテキスト。
  * 一つのゲームに対して一つのみ存在する。
  */
-export class GameContext<G extends Runner_g, Game extends RunnerGame> {
+export class GameContext<EngineVersion extends keyof EngineVersions> {
 	protected params: GameContextParameterObject;
 	protected playManager: PlayManager;
 	protected runnerManager: RunnerManager;
@@ -65,7 +65,7 @@ export class GameContext<G extends Runner_g, Game extends RunnerGame> {
 	/**
 	 * active の GameClient を返す。
 	 */
-	async getGameClient(params: GameClientStartParameterObject = {}): Promise<GameClient<G, Game>> {
+	async getGameClient(params: GameClientStartParameterObject = {}): Promise<GameClient<EngineVersion>> {
 		const { playManager, runnerManager } = this;
 		const { gameJsonPath } = this.params;
 
@@ -97,16 +97,16 @@ export class GameContext<G extends Runner_g, Game extends RunnerGame> {
 
 		const runner = runnerManager.getRunner(runnerId)!;
 		runner.errorTrigger.add(this.handleRunnerError, this);
-		const game = (await runnerManager.startRunner(runnerId)) as Game;
+		const game = (await runnerManager.startRunner(runnerId)) as EngineVersions[EngineVersion]["game"];
 		runner.pause();
 
-		return new GameClient<G, Game>({ runner, game, type: "active", renderingMode: params.renderingMode });
+		return new GameClient<EngineVersion>({ runner, game, type: "active", renderingMode: params.renderingMode });
 	}
 
 	/**
 	 * passive の GameClient を生成する。
 	 */
-	async createPassiveGameClient(params: GameClientStartParameterObject = {}): Promise<GameClient<G, Game>> {
+	async createPassiveGameClient(params: GameClientStartParameterObject = {}): Promise<GameClient<EngineVersion>> {
 		const { playManager, runnerManager, playId } = this;
 
 		if (playId == null) {
@@ -128,11 +128,11 @@ export class GameContext<G extends Runner_g, Game extends RunnerGame> {
 		});
 
 		const runner = runnerManager.getRunner(runnerId)!;
-		const game = (await runnerManager.startRunner(runnerId)) as Game;
+		const game = (await runnerManager.startRunner(runnerId)) as EngineVersions[EngineVersion]["game"];
 		runner.errorTrigger.add(this.handleRunnerError, this);
 		runner.pause();
 
-		return new GameClient<G, Game>({ runner, game, type: "passive", renderingMode: params.renderingMode });
+		return new GameClient<EngineVersion>({ runner, game, type: "passive", renderingMode: params.renderingMode });
 	}
 
 	/**

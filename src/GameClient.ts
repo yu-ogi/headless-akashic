@@ -1,14 +1,14 @@
 import { RunnerAdvanceConditionFunc, RunnerRenderingMode, RunnerV1, RunnerV2, RunnerV3 } from "@akashic/headless-driver";
 import { Canvas } from "canvas";
-import { RunnerGame, Runner_g } from "./types";
+import { EngineVersions } from "./types";
 
 type Runner = RunnerV1 | RunnerV2 | RunnerV3;
 
 export type GameClientInstanceType = "active" | "passive";
 
-export interface GameClientParameterObject<Game extends RunnerGame> {
+export interface GameClientParameterObject<EngineVersion extends keyof EngineVersions> {
 	runner: Runner;
-	game: Game;
+	game: EngineVersions[EngineVersion]["game"];
 	type: GameClientInstanceType;
 	renderingMode: RunnerRenderingMode;
 }
@@ -16,11 +16,11 @@ export interface GameClientParameterObject<Game extends RunnerGame> {
 /**
  * ゲームクライアント。
  */
-export class GameClient<G extends Runner_g, Game extends RunnerGame> {
+export class GameClient<EngineVersion extends keyof EngineVersions> {
 	/**
 	 * `g.game` の値。
 	 */
-	readonly game: Game;
+	readonly game: EngineVersions[EngineVersion]["game"];
 
 	/**
 	 * ゲームインスタンスの種別。
@@ -30,17 +30,17 @@ export class GameClient<G extends Runner_g, Game extends RunnerGame> {
 	/**
 	 * `g` の値。 `g.game` は `undefined` である点に注意。
 	 */
-	readonly g: G;
+	readonly g: EngineVersions[EngineVersion]["g"];
 
 	protected runner: Runner;
 	protected renderingMode: RunnerRenderingMode;
 
-	constructor({ runner, game, type, renderingMode }: GameClientParameterObject<Game>) {
+	constructor({ runner, game, type, renderingMode }: GameClientParameterObject<EngineVersion>) {
 		this.runner = runner;
 		this.game = game;
 		this.type = type;
 		this.renderingMode = renderingMode;
-		this.g = runner.g as G;
+		this.g = runner.g;
 	}
 
 	/**
