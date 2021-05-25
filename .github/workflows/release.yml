@@ -33,7 +33,7 @@ jobs:
             ${{ env.cache-version }}-${{ runner.os }}-
       - name: Prepare
         run: |
-          npm ci --ignore-scripts
+          npm ci
           npm run build
           npm test
       - name: Publish and Release
