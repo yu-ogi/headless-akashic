@@ -13,6 +13,36 @@ describe("run content", () => {
 		expect(game.fps).toBe(60);
 	});
 
+	it("create assets", async () => {
+		const context = new GameContext<3>({});
+		const activeClient = await context.getGameClient();
+
+		const imageAsset = activeClient.createDummyImageAsset({
+			id: "dummy-image-asset-id",
+			path: "dummy-image-asset-path",
+			width: 150,
+			height: 107
+		});
+		expect(imageAsset.id).toBe("dummy-image-asset-id");
+		expect(imageAsset.path).toBe("dummy-image-asset-path");
+		expect(imageAsset.width).toBe(150);
+		expect(imageAsset.height).toBe(107);
+
+		const audioAsset = activeClient.createDummyAudioAsset({
+			id: "dummy-audio-asset-id",
+			path: "dummy-audio-asset-path",
+			duration: 1290,
+			loop: false,
+			system: undefined,
+			hint: undefined
+		});
+		expect(audioAsset.id).toBe("dummy-audio-asset-id");
+		expect(audioAsset.path).toBe("dummy-audio-asset-path");
+		expect(audioAsset.duration).toBe(1290);
+		expect(audioAsset.loop).toBe(false);
+		expect(audioAsset.hint).toBeUndefined();
+	});
+
 	it("helloworld", async () => {
 		const context = new GameContext<3>({ gameJsonPath });
 		const activeClient = await context.getGameClient();
