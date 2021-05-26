@@ -1,9 +1,7 @@
 import { RunnerV1, RunnerV2, RunnerV3 } from "@akashic/headless-driver";
 import { ResourceFactory as ResourceFactoryV1 } from "@akashic/headless-driver-runner-v1/lib/platform/ResourceFactory";
 import { ResourceFactory as ResourceFactoryV2 } from "@akashic/headless-driver-runner-v2/lib/platform/ResourceFactory";
-import {
-	NodeCanvasResourceFactory as ResourceFactoryV3_NodeCanvas
-} from "@akashic/headless-driver-runner-v3/lib/platform/NodeCanvasResourceFactory";
+import { NodeCanvasResourceFactory as ResourceFactoryV3_NodeCanvas } from "@akashic/headless-driver-runner-v3/lib/platform/NodeCanvasResourceFactory";
 import { NullResourceFactory as ResourceFactoryV3_Null } from "@akashic/headless-driver-runner-v3/lib/platform/NullResourceFactory";
 import type { EngineVersions } from "./types";
 import type { RunnerAdvanceConditionFunc, RunnerRenderingMode } from "@akashic/headless-driver";
