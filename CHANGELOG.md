@@ -1,7 +1,7 @@
 # CHANGELOG
 
 ## unreleased changes
-* `GameContext#createDummyImageAsset()`, `GameContext#createDummyAudioAsset()` を追加
+* `GameClient#createDummyImageAsset()`, `GameClient#createDummyAudioAsset()` を追加
 
 ## 2.0.0
 * headless-driver@1.7.0 に追従
