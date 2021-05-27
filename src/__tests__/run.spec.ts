@@ -28,15 +28,14 @@ describe("run content", () => {
 		expect(imageAsset.width).toBe(150);
 		expect(imageAsset.height).toBe(107);
 
-		const imageAssetNonId = activeClient.createDummyImageAsset({
-			path: "dummy-image-asset-non-id-path",
+		const imageAssetNonIdPath = activeClient.createDummyImageAsset({
 			width: 200,
 			height: 120
 		});
-		expect(imageAssetNonId.id).toBeDefined();
-		expect(imageAssetNonId.path).toBe("dummy-image-asset-non-id-path");
-		expect(imageAssetNonId.width).toBe(200);
-		expect(imageAssetNonId.height).toBe(120);
+		expect(imageAssetNonIdPath.id).toBeDefined();
+		expect(imageAssetNonIdPath.path).toBeDefined();
+		expect(imageAssetNonIdPath.width).toBe(200);
+		expect(imageAssetNonIdPath.height).toBe(120);
 
 		const audioAsset = activeClient.createDummyAudioAsset({
 			id: "dummy-audio-asset-id",
@@ -50,8 +49,7 @@ describe("run content", () => {
 		expect(audioAsset.loop).toBe(false);
 		expect(audioAsset.hint).toBeUndefined();
 
-		const audioAssetNonId = activeClient.createDummyAudioAsset({
-			path: "dummy-audio-asset-non-id-path",
+		const audioAssetNonIdPath = activeClient.createDummyAudioAsset({
 			duration: 10491,
 			systemId: "music",
 			loop: true,
@@ -59,11 +57,11 @@ describe("run content", () => {
 				streaming: true
 			}
 		});
-		expect(audioAssetNonId.id).toBeDefined();
-		expect(audioAssetNonId.path).toBe("dummy-audio-asset-non-id-path");
-		expect(audioAssetNonId.duration).toBe(10491);
-		expect(audioAssetNonId.loop).toBe(true);
-		expect(audioAssetNonId.hint).toEqual({ streaming: true });
+		expect(audioAssetNonIdPath.id).toBeDefined();
+		expect(audioAssetNonIdPath.path).toBeDefined();
+		expect(audioAssetNonIdPath.duration).toBe(10491);
+		expect(audioAssetNonIdPath.loop).toBe(true);
+		expect(audioAssetNonIdPath.hint).toEqual({ streaming: true });
 	});
 
 	it("helloworld", async () => {
