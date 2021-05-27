@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## unreleased changes
+## 2.1.0
 * `GameClient#createDummyImageAsset()`, `GameClient#createDummyAudioAsset()` を追加
 
 ## 2.0.0
