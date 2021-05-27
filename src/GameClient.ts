@@ -1,8 +1,9 @@
-import { RunnerV1, RunnerV2, RunnerV3 } from "@akashic/headless-driver";
+import { RunnerV1, RunnerV1Game, RunnerV2, RunnerV2Game, RunnerV3, RunnerV3Game } from "@akashic/headless-driver";
 import { ResourceFactory as ResourceFactoryV1 } from "@akashic/headless-driver-runner-v1/lib/platform/ResourceFactory";
 import { ResourceFactory as ResourceFactoryV2 } from "@akashic/headless-driver-runner-v2/lib/platform/ResourceFactory";
 import { NodeCanvasResourceFactory as ResourceFactoryV3_NodeCanvas } from "@akashic/headless-driver-runner-v3/lib/platform/NodeCanvasResourceFactory";
 import { NullResourceFactory as ResourceFactoryV3_Null } from "@akashic/headless-driver-runner-v3/lib/platform/NullResourceFactory";
+import * as uuid from "uuid";
 import type { EngineVersions } from "./types";
 import type { RunnerAdvanceConditionFunc, RunnerRenderingMode } from "@akashic/headless-driver";
 import type { Canvas } from "canvas";
@@ -19,19 +20,19 @@ export interface GameClientParameterObject<EngineVersion extends keyof EngineVer
 }
 
 export interface GameClientCreateImageAssetParameterObject {
-	id: string;
+	id?: string;
 	path: string;
 	width: number;
 	height: number;
 }
 
 export interface GameClientCreateAudioAssetParameterObject {
-	id: string;
+	id?: string;
 	path: string;
 	duration: number;
-	system: any;
-	loop: boolean;
-	hint: any;
+	systemId?: string;
+	loop?: boolean;
+	hint?: any;
 }
 
 /**
@@ -149,13 +150,14 @@ export class GameClient<EngineVersion extends keyof EngineVersions = keyof Engin
 	 */
 	createDummyImageAsset(param: GameClientCreateImageAssetParameterObject): any {
 		const resFac = this.runner.platform.getResourceFactory();
+		const id = param.id ?? uuid.v4();
 
 		if (resFac instanceof ResourceFactoryV1) {
-			return resFac.createImageAsset(param.id, param.path, param.width, param.height);
+			return resFac.createImageAsset(id, param.path, param.width, param.height);
 		} else if (resFac instanceof ResourceFactoryV2) {
-			return resFac.createImageAsset(param.id, param.path, param.width, param.height);
+			return resFac.createImageAsset(id, param.path, param.width, param.height);
 		} else if (resFac instanceof ResourceFactoryV3_NodeCanvas || resFac instanceof ResourceFactoryV3_Null) {
-			return resFac.createImageAsset(param.id, param.path, param.width, param.height);
+			return resFac.createImageAsset(id, param.path, param.width, param.height);
 		}
 
 		throw Error("GameClient#createAudioAsset(): Could not create a image asset");
@@ -167,13 +169,21 @@ export class GameClient<EngineVersion extends keyof EngineVersions = keyof Engin
 	 */
 	createDummyAudioAsset(param: GameClientCreateAudioAssetParameterObject): any {
 		const resFac = this.runner.platform.getResourceFactory();
+		const id = param.id ?? uuid.v4();
+		const loop = !!param.loop;
 
 		if (resFac instanceof ResourceFactoryV1) {
-			return resFac.createAudioAsset(param.id, param.path, param.duration, param.system, param.loop, param.hint);
+			const game = this.game as RunnerV1Game;
+			const system = param.systemId ? game._audioSystemManager[param.systemId] : game._audioSystemManager[game.defaultAudioSystemId];
+			return resFac.createAudioAsset(id, param.path, param.duration, system, loop, param.hint);
 		} else if (resFac instanceof ResourceFactoryV2) {
-			return resFac.createAudioAsset(param.id, param.path, param.duration, param.system, param.loop, param.hint);
+			const game = this.game as RunnerV2Game;
+			const system = param.systemId ? game._audioSystemManager[param.systemId] : game._audioSystemManager[game.defaultAudioSystemId];
+			return resFac.createAudioAsset(id, param.path, param.duration, system, loop, param.hint);
 		} else if (resFac instanceof ResourceFactoryV3_NodeCanvas || resFac instanceof ResourceFactoryV3_Null) {
-			return resFac.createAudioAsset(param.id, param.path, param.duration, param.system, param.loop, param.hint);
+			const game = this.game as RunnerV3Game;
+			const system = param.systemId ? game.audio[param.systemId] : game.audio[game.defaultAudioSystemId];
+			return resFac.createAudioAsset(id, param.path, param.duration, system, loop, param.hint);
 		}
 
 		throw Error("GameClient#createAudioAsset(): Could not create a audio asset");
