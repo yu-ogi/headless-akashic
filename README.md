@@ -44,6 +44,19 @@ const GameContext = require("@akashic/headless-akashic").GameContext;
   const entity = scene.children[0];
   assert(entity instanceof client.g.Sprite); // entity が g.Sprite であることを確認
 
+  // ダミーの ImageAsset から g.Sprite を生成
+  const dummySprite = new client.g.Sprite({
+    scene: game.scene(),
+    src: client.createDummyImageAsset({
+      id: "dummy-image-asset-id",
+      path: "dummy-image-asset-path",
+      width: 150,
+      height: 107
+    }),
+    width: 150,
+    height: 107
+  });
+
   // ...
 
   await context.destroy(); // GameContext の破棄
