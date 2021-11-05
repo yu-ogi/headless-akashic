@@ -2,15 +2,15 @@ import { RunnerV1Game, RunnerV1_g, RunnerV2Game, RunnerV2_g, RunnerV3Game, Runne
 
 export interface EngineVersions {
 	1: {
-		g: RunnerV1_g;
+		g: typeof RunnerV1_g;
 		game: RunnerV1Game;
 	};
 	2: {
-		g: RunnerV2_g;
+		g: typeof RunnerV2_g;
 		game: RunnerV2Game;
 	};
 	3: {
-		g: RunnerV3_g;
+		g: typeof RunnerV3_g;
 		game: RunnerV3Game;
 	};
 }
