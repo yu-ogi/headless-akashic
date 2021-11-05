@@ -1,6 +1,6 @@
 {
   "name": "@akashic/headless-akashic",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "A headless module for launching contents with the Akashic Engine",
   "main": "lib/index.js",
   "scripts": {
@@ -80,7 +80,7 @@
     ]
   },
   "dependencies": {
-    "@akashic/headless-driver": "^1.10.1",
+    "@akashic/headless-driver": "^1.11.0",
     "canvas": "2.8.0",
     "uuid": "^8.3.2"
   },

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.2.0
+* headless-driver@1.11.0 に追従
+
 ## 2.1.0
 * `GameClient#createDummyImageAsset()`, `GameClient#createDummyAudioAsset()` を追加
 
