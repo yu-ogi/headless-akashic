@@ -14,21 +14,5 @@
     "before 6am every weekday"
   ],
   "labels": ["dependencies"],
-  "separateMinorPatch": false,
-  "packageRules": [
-    {
-      "matchPackagePatterns": ["^@akashic/"],
-      "matchDepTypes": ["dependencies"],
-      "matchUpdateTypes": ["patch", "minor", "pin", "digest"],
-      "schedule": "at any time",
-      "automerge": true,
-      "groupName": "akashic packages (dependencies)",
-      "patch": {
-        "bumpVersion": "patch"
-      },
-      "minor": {
-        "bumpVersion": "minor"
-      }
-    }
-  ]
+  "separateMinorPatch": false
 }
