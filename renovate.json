@@ -1,18 +1,5 @@
 {
   "extends": [
-    "config:base",
-    ":timezone(Asia/Tokyo)",
-    ":prConcurrentLimitNone",
-    ":prHourlyLimitNone",
-    ":dependencyDashboard",
-    ":preserveSemverRanges",
-    "group:definitelyTyped"
-  ],
-  "schedule": [
-    "every weekend",
-    "after 10pm every weekday",
-    "before 6am every weekday"
-  ],
-  "labels": ["dependencies"],
-  "separateMinorPatch": false
+    "config:base"
+  ]
 }
