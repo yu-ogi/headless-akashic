@@ -49,23 +49,6 @@
       "matchPackagePatterns": ["jest"],
       "groupName": "jest packages",
       "automerge": true
-    },
-    {
-      "matchUpdateTypes": ["patch", "minor"],
-      "matchDepTypes": ["dependencies"],
-      "groupName": "all dependencies",
-      "patch": {
-        "bumpVersion": "patch"
-      },
-      "minor": {
-        "bumpVersion": "minor"
-      }
-    },
-    {
-      "matchUpdateTypes": ["patch", "minor"],
-      "matchDepTypes": ["devDependencies"],
-      "groupName": "all devDependencies",
-      "automerge": true
     }
   ]
 }
