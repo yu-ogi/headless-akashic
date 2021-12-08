@@ -19,7 +19,7 @@
     {
       "matchPackagePatterns": ["^@akashic/"],
       "matchDepTypes": ["dependencies"],
-      "matchUpdateTypes": ["patch", "minor"],
+      "matchUpdateTypes": ["patch", "minor", "pin", "digest"],
       "schedule": "at any time",
       "automerge": true,
       "groupName": "akashic packages (dependencies)",
@@ -53,7 +53,6 @@
     {
       "matchUpdateTypes": ["patch", "minor"],
       "matchDepTypes": ["dependencies"],
-      "excludePackagePatterns": ["^@akashic/", "eslint", "jest"],
       "groupName": "all dependencies",
       "patch": {
         "bumpVersion": "patch"
@@ -65,7 +64,6 @@
     {
       "matchUpdateTypes": ["patch", "minor"],
       "matchDepTypes": ["devDependencies"],
-      "excludePackagePatterns": ["^@akashic/", "eslint", "jest"],
       "groupName": "all devDependencies",
       "automerge": true
     }
