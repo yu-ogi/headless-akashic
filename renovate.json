@@ -29,26 +29,6 @@
       "minor": {
         "bumpVersion": "minor"
       }
-    },
-    {
-      "matchPackagePatterns": ["^@akashic/"],
-      "matchDepTypes": ["devDependencies"],
-      "schedule": "at any time",
-      "automerge": true,
-      "groupName": "akashic packages (devDependencies)",
-      "major": {
-        "automerge": false
-      }
-    },
-    {
-      "matchPackagePatterns": ["eslint"],
-      "groupName": "eslint packages",
-      "automerge": true
-    },
-    {
-      "matchPackagePatterns": ["jest"],
-      "groupName": "jest packages",
-      "automerge": true
     }
   ]
 }
